@@ -31,7 +31,7 @@ void Cook::PrepareIngredients()
         cookCond.wait(lk, [&] { return !ordersQueue.empty(); });
 
         /* Small delay to not instantly start the order when receiving it */
-        std::this_thread::sleep_for(std::chrono::seconds(2));   // Sleep for 2 seconds
+        std::this_thread::sleep_for(std::chrono::seconds(3));   // Sleep for 2 seconds
 
         {
             std::unique_lock<std::mutex> lk(displayMut);
@@ -42,7 +42,7 @@ void Cook::PrepareIngredients()
                 << ")\n";
         }
 
-        std::this_thread::sleep_for(std::chrono::seconds(3));   // Sleep for 3 seconds
+        std::this_thread::sleep_for(std::chrono::seconds(4));   // Sleep for 3 seconds
 
         {
             std::unique_lock<std::mutex> lk(displayMut);

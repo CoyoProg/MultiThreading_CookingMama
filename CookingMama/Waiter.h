@@ -13,6 +13,7 @@ public:
 		std::queue<Orders>& preparationQueueP,
 		std::queue<Orders>& ordersQueueP,
 		std::queue<Orders>& mealsQueue,
+		std::queue<Orders>& readyMeals,
 		std::mutex& preparationMutex,
 		std::mutex& orderMutex,
 		std::mutex& mealMutex,
@@ -29,6 +30,7 @@ private:
 	std::queue<Orders>& preparationQueue;
 	std::queue<Orders>& ordersQueue;
 	std::queue<Orders>& mealsQueue;
+	std::queue<Orders>& readyMeals;
 
 	std::mutex& preparationMut;
 	std::mutex& orderMut;

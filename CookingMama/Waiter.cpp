@@ -1,10 +1,11 @@
 #include "Waiter.h"
 #include <iostream>
 
-Waiter::Waiter(std::queue<Orders>& preparationQueueP, std::queue<Orders>& ordersQueueP, std::queue<Orders>& mealsQueueP, std::mutex& preparationMutex, std::mutex& orderMutex, std::mutex& mealMutex, std::mutex& eatMutex, std::mutex& displayMutex, std::condition_variable& customerCondition, std::condition_variable& customerCondition2, std::condition_variable& waiterCondition, std::condition_variable& cookCondition) :
+Waiter::Waiter(std::queue<Orders>& preparationQueueP, std::queue<Orders>& ordersQueueP, std::queue<Orders>& mealsQueueP, std::queue<Orders>& readyMealsP, std::mutex& preparationMutex, std::mutex& orderMutex, std::mutex& mealMutex, std::mutex& eatMutex, std::mutex& displayMutex, std::condition_variable& customerCondition, std::condition_variable& customerCondition2, std::condition_variable& waiterCondition, std::condition_variable& cookCondition) :
     preparationQueue(preparationQueueP),
     mealsQueue(mealsQueueP),
     ordersQueue(ordersQueueP),
+    readyMeals(readyMealsP),
     preparationMut(preparationMutex),
     orderMut(orderMutex),
     mealMut(mealMutex),
@@ -40,17 +41,21 @@ void Waiter::TakeOrder()
 
         isBusy = true;
 
-        std::this_thread::sleep_for(std::chrono::seconds(1)); // Sleep for 1 second
+        std::this_thread::sleep_for(std::chrono::seconds(2)); // Sleep for 1 second
         {
             std::unique_lock<std::mutex> lk(displayMut);
             std::cout << "Waiter is running to customer " << preparationQueue.front().GetOrderNumber() << " !\n";
         }
 
 
-        std::this_thread::sleep_for(std::chrono::seconds(2)); // Sleep for 2 second
+        std::this_thread::sleep_for(std::chrono::seconds(4)); // Sleep for 2 second
         {
             std::unique_lock<std::mutex> lk(displayMut);
-            std::cout << "Waiter took the order of customer " << preparationQueue.front().GetOrderNumber() << "\n";
+            std::cout << "Waiter took the order of customer " << preparationQueue.front().GetOrderNumber() 
+                << " (" << preparationQueue.front().ingredients[0]
+                << " " << preparationQueue.front().ingredients[1]
+                << " " << preparationQueue.front().ingredients[2]
+                << " )\n";
         }
 
         Orders data = preparationQueue.front();
@@ -89,16 +94,22 @@ void Waiter::BringOrder()
         std::this_thread::sleep_for(std::chrono::seconds(2)); // Sleep for 2 second
         {
             std::unique_lock<std::mutex> lk(displayMut);
-            std::cout << "Waiter give the order of customer " << mealsQueue.front().GetOrderNumber() << "\n";
+            std::cout << "Waiter give his meal to customer " << mealsQueue.front().GetOrderNumber() << "\n";
         }
 
-        //Orders data = mealsQueue.front();
+        Orders readyMeal = mealsQueue.front();
+        readyMeal.isReady = true;
         mealsQueue.pop();
 
         isBusy = false;
         lk.unlock();
 
-        /* Send the order to the kitchen here */
+        /* Lock the order */
+        {
+            std::lock_guard<std::mutex> lk(eatMut);
+            readyMeals.push(readyMeal);
+        }
+
         customerCond2.notify_one();
     }
 }

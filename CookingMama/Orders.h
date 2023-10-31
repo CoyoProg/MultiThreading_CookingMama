@@ -3,7 +3,7 @@
 class Orders
 {
 public:
-    Orders(int orderNumberP)
+    Orders(int orderNumberP = 0)
     {
         for (int i = 0; i < 3; i++)
         {
@@ -15,6 +15,7 @@ public:
 
     int ingredients[3];
     int GetOrderNumber() { return OrderNumber; }
+    bool isReady{ false };
 
 private:
     int OrderNumber{ 0 };

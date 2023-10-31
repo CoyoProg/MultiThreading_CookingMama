@@ -17,6 +17,7 @@ void Restaurant::startSimulation()
         preparationQueue,
         ordersQueue,
         mealsQueue,
+        readyMeals,
         preparationMut,
         orderMut,
         mealMut,
@@ -56,9 +57,9 @@ void Restaurant::AddClient()
     while (!isRestaurantFull())
     {
         customerCount++;
-        Customer* customer = new Customer(customerCount, preparationQueue, preparationMut, eatMut, displayMut, customerCond, customerCond2);
+        Customer* customer = new Customer(customerCount, preparationQueue, readyMeals, preparationMut, eatMut, displayMut, customerCond, customerCond2);
 
         /* Time between two customers */
-        std::this_thread::sleep_for(std::chrono::seconds(20)); // Sleep for 15 seconds
+        std::this_thread::sleep_for(std::chrono::seconds(35)); // Sleep for 15 seconds
     }
 }

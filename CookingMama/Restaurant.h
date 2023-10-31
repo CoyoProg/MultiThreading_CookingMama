@@ -20,6 +20,7 @@ private:
     std::queue<Orders> preparationQueue;
     std::queue<Orders> ordersQueue;
     std::queue<Orders> mealsQueue;
+    std::queue<Orders> readyMeals;
     std::queue<Orders> ingredientsQueue;
 
     std::mutex preparationMut;

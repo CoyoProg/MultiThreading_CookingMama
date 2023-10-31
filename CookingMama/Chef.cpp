@@ -31,14 +31,18 @@ void Chef::PrepareMeal()
         chefCond.wait(lk, [&] { return !ingredientsQueue.empty(); });
 
         /* Small delay to not instantly cook the meal when receiving the ingredients */
-        std::this_thread::sleep_for(std::chrono::seconds(2));   // Sleep for 1 seconds
+        std::this_thread::sleep_for(std::chrono::seconds(3));   // Sleep for 1 seconds
 
         {
             std::unique_lock<std::mutex> lk(displayMut);
-            std::cout << "The chef is preparing the meal of customer " << ingredientsQueue.front().GetOrderNumber() << " \n";
+            std::cout << "The chef is preparing the meal of customer " << ingredientsQueue.front().GetOrderNumber() 
+                << " ( " << ingredientsQueue.front().ingredients[0]
+                << " " << ingredientsQueue.front().ingredients[1]
+                << " " << ingredientsQueue.front().ingredients[2]
+                << " )\n";
         }
 
-        std::this_thread::sleep_for(std::chrono::seconds(4));   // Sleep for 4 seconds
+        std::this_thread::sleep_for(std::chrono::seconds(5));   // Sleep for 4 seconds
 
         {
             std::unique_lock<std::mutex> lk(displayMut);

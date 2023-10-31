@@ -11,6 +11,7 @@ class Customer
 public:
 	Customer(int customerIdP, 
 		std::queue<Orders>& preparationQueueP,
+		std::queue<Orders>& readyMealsP,
 		std::mutex& preparationMutex,
 		std::mutex& eatMutex,
 		std::mutex& displayMutex,
@@ -21,8 +22,10 @@ public:
 private:
 	int CustomerID{ 0 };
 	bool IsOrderReceived{ false };
+	Orders myMeal;
 
 	std::queue<Orders>& preparationQueue;
+	std::queue<Orders>& readyMeals;
 
 	std::mutex& preparationMut;
 	std::mutex& eatMut;

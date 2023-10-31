@@ -3,8 +3,9 @@
 #include <random>
 #include <functional>
 
-Customer::Customer(int customerIdP, std::queue<Orders>& preparationQueueP, std::mutex& preparationMutex, std::mutex& eatMutex, std::mutex& displayMutex, std::condition_variable& customerCondition, std::condition_variable& customerCondition2) :
+Customer::Customer(int customerIdP, std::queue<Orders>& preparationQueueP, std::queue<Orders>& readyMealsP, std::mutex& preparationMutex, std::mutex& eatMutex, std::mutex& displayMutex, std::condition_variable& customerCondition, std::condition_variable& customerCondition2) :
     preparationQueue(preparationQueueP),
+    readyMeals(readyMealsP),
     CustomerID(customerIdP),
     preparationMut(preparationMutex),
     eatMut(eatMutex),
@@ -26,7 +27,7 @@ Customer::~Customer()
 void Customer::WalkIn()
 {
     /* Customer come into the restaurant and choose what meal to order */
-    Orders data = RandomMeal();
+    myMeal = RandomMeal();
 
     /* Lock the display */
     {
@@ -39,22 +40,19 @@ void Customer::WalkIn()
     {
         std::lock_guard<std::mutex> lk(displayMut);
         std::cout << "Customer " << CustomerID << " choosed a meal ("
-            << data.ingredients[0]
-            << " " << data.ingredients[1]
-            << " " << data.ingredients[2]
+            << myMeal.ingredients[0]
+            << " " << myMeal.ingredients[1]
+            << " " << myMeal.ingredients[2]
             << " )\n";
     }
 
     /* Lock the order */
     {
         std::lock_guard<std::mutex> lk(preparationMut);
-        preparationQueue.push(data);
+        preparationQueue.push(myMeal);
     }
 
     customerCond.notify_one();
-
-    /* Time between two customers */
-    std::this_thread::sleep_for(std::chrono::seconds(15)); // Sleep for 10 seconds
 }
 
 void Customer::Eat()
@@ -62,14 +60,25 @@ void Customer::Eat()
     while (true)
     {
         std::unique_lock<std::mutex> lk(eatMut);
-        customerCond2.wait(lk, [&] { return IsOrderReceived; });
+        customerCond2.wait(lk, [&] 
+            { 
+                //std::cout << "NUMBER MEAL: " << readyMeals.front().isReady << "\n";
+                //std::cout << "NUMBER CUSTOMER: " << CustomerID << "\n";
+                return (!readyMeals.empty() && readyMeals.front().GetOrderNumber() == CustomerID);
+            });
 
-        IsOrderReceived = true;
+        std::this_thread::sleep_for(std::chrono::seconds(1)); // Simulate eating for 1 seconds
 
         {
             std::unique_lock<std::mutex> lk(displayMut);
-            std::cout << "Customer " << CustomerID << " is eating.\n";
+            std::cout << "Customer " << CustomerID << " is eating."
+                << " ( " << readyMeals.front().ingredients[0]
+                << " " << readyMeals.front().ingredients[1]
+                << " " << readyMeals.front().ingredients[2]
+                << " )\n";
         }
+
+        readyMeals.pop();
 
         std::this_thread::sleep_for(std::chrono::seconds(3)); // Simulate eating for 3 seconds
 
@@ -77,8 +86,6 @@ void Customer::Eat()
             std::unique_lock<std::mutex> lk(displayMut);
             std::cout << "Customer " << CustomerID << " finished eating.\n";
         }
-
-        IsOrderReceived = false;
 
         lk.unlock();
     }
@@ -97,6 +104,5 @@ Orders Customer::RandomMeal()
     for (int i = 0; i < 3; i++) {
         order.ingredients[i] = dist(gen);
     }
-
     return order;
 }
