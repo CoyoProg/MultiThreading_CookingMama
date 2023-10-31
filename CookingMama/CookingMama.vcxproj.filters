@@ -19,6 +19,9 @@
     <Filter Include="Fichiers d%27en-tête\Actors">
       <UniqueIdentifier>{fc42c8f7-ed79-4d48-b9b8-1148e3cef5d6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Fichiers sources\Structs">
+      <UniqueIdentifier>{199a8350-dbce-4825-8572-0e913ddcde92}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CookingMama.cpp">
@@ -30,6 +33,15 @@
     <ClCompile Include="Customer.cpp">
       <Filter>Fichiers sources\Actors</Filter>
     </ClCompile>
+    <ClCompile Include="Waiter.cpp">
+      <Filter>Fichiers sources\Actors</Filter>
+    </ClCompile>
+    <ClCompile Include="Cook.cpp">
+      <Filter>Fichiers sources\Actors</Filter>
+    </ClCompile>
+    <ClCompile Include="Chef.cpp">
+      <Filter>Fichiers sources\Actors</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Restaurant.h">
@@ -38,8 +50,17 @@
     <ClInclude Include="Customer.h">
       <Filter>Fichiers d%27en-tête\Actors</Filter>
     </ClInclude>
+    <ClInclude Include="Waiter.h">
+      <Filter>Fichiers d%27en-tête\Actors</Filter>
+    </ClInclude>
+    <ClInclude Include="Cook.h">
+      <Filter>Fichiers d%27en-tête\Actors</Filter>
+    </ClInclude>
+    <ClInclude Include="Chef.h">
+      <Filter>Fichiers d%27en-tête\Actors</Filter>
+    </ClInclude>
     <ClInclude Include="Orders.h">
-      <Filter>Fichiers sources</Filter>
+      <Filter>Fichiers sources\Structs</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

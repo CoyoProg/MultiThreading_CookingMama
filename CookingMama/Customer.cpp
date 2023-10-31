@@ -3,15 +3,20 @@
 #include <random>
 #include <functional>
 
-Customer::Customer(int customerIdP, std::queue<Orders>& preparationQueueP, std::mutex& preparationMutex, std::mutex& displayMutex, std::condition_variable& customerCondition) :
+Customer::Customer(int customerIdP, std::queue<Orders>& preparationQueueP, std::mutex& preparationMutex, std::mutex& eatMutex, std::mutex& displayMutex, std::condition_variable& customerCondition, std::condition_variable& customerCondition2) :
     preparationQueue(preparationQueueP),
     CustomerID(customerIdP),
     preparationMut(preparationMutex),
+    eatMut(eatMutex),
     displayMut(displayMutex),
-    customerCond(customerCondition)
+    customerCond(customerCondition),
+    customerCond2(customerCondition2)
 {
-    std::thread waiterThread(&Customer::WalkIn, this);
-    waiterThread.detach();
+    std::thread walkinThread(&Customer::WalkIn, this);
+    walkinThread.detach();
+
+    std::thread eatThread(&Customer::Eat, this);
+    eatThread.detach();
 }
 
 Customer::~Customer()
@@ -50,6 +55,33 @@ void Customer::WalkIn()
 
     /* Time between two customers */
     std::this_thread::sleep_for(std::chrono::seconds(15)); // Sleep for 10 seconds
+}
+
+void Customer::Eat()
+{
+    while (true)
+    {
+        std::unique_lock<std::mutex> lk(eatMut);
+        customerCond2.wait(lk, [&] { return IsOrderReceived; });
+
+        IsOrderReceived = true;
+
+        {
+            std::unique_lock<std::mutex> lk(displayMut);
+            std::cout << "Customer " << CustomerID << " is eating.\n";
+        }
+
+        std::this_thread::sleep_for(std::chrono::seconds(3)); // Simulate eating for 3 seconds
+
+        {
+            std::unique_lock<std::mutex> lk(displayMut);
+            std::cout << "Customer " << CustomerID << " finished eating.\n";
+        }
+
+        IsOrderReceived = false;
+
+        lk.unlock();
+    }
 }
 
 Orders Customer::RandomMeal()

@@ -127,14 +127,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Chef.cpp" />
+    <ClCompile Include="Cook.cpp" />
     <ClCompile Include="CookingMama.cpp" />
     <ClCompile Include="Customer.cpp" />
     <ClCompile Include="Restaurant.cpp" />
+    <ClCompile Include="Waiter.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Chef.h" />
+    <ClInclude Include="Cook.h" />
     <ClInclude Include="Customer.h" />
     <ClInclude Include="Orders.h" />
     <ClInclude Include="Restaurant.h" />
+    <ClInclude Include="Waiter.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
