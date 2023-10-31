@@ -1,0 +1,6 @@
+﻿C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppBuild.targets(531,5): warning MSB8028: Le répertoire intermédiaire (x64\Debug\) contient des fichiers partagés provenant d'un autre projet (SumOfTable.vcxproj). Cela peut entraîner un comportement de nettoyage et de regénération incorrect.
+  SumOfTable.cpp
+C:\Users\cpaya\Documents\ArtFx\C++\Parallelism And MultiThreading\SumOfTable\SumOfTable.cpp(74,18): warning C4267: 'initialisation' : conversion de 'size_t' en 'int', perte possible de données
+C:\Users\cpaya\Documents\ArtFx\C++\Parallelism And MultiThreading\SumOfTable\SumOfTable.cpp(105,18): warning C4267: 'initialisation' : conversion de 'size_t' en 'int', perte possible de données
+C:\Users\cpaya\Documents\ArtFx\C++\Parallelism And MultiThreading\SumOfTable\SumOfTable.cpp(133,15): warning C4244: 'argument' : conversion de 'time_t' en 'unsigned int', perte possible de données
+  SumOfTable.vcxproj -> C:\Users\cpaya\Documents\ArtFx\C++\Parallelism And MultiThreading\x64\Debug\Sum Of Table.exe
